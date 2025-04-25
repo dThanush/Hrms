@@ -1,0 +1,96 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand ms-3" href="#"><i class="fa fa-users me-2"></i> HRMS</a>
+      <div class="ms-auto">
+        <button class="btn btn-danger me-3" (click)="logout()">Logout</button>
+      </div>
+    </div>
+</nav>
+
+<!-- Sidebar (Only for Admins) -->
+<div class="sidebar" *ngIf="userRole === 'admin'">
+    <div class="d-flex align-items-center justify-content-center mb-4">
+      <h3><i class="fa fa-users me-2"></i> HRMS</h3>
+    </div>
+    <ul class="nav flex-column ms-3">
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': selectedSection === 'dashboard'}" (click)="changeSection('dashboard')">
+          <i class="fa fa-tachometer-alt me-2"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': selectedSection === 'users'}" (click)="changeSection('users')">
+          <i class="fa fa-users me-2"></i> Employees
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': selectedSection === 'leave'}" (click)="changeSection('leave')">
+          <i class="fa fa-calendar-check me-2"></i> Leave Management
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'active': selectedSection === 'punch'}" (click)="changeSection('punch')">
+          <i class="fa fa-clock me-2"></i> Punch Timings
+        </a>
+      </li>
+    </ul>
+</div>
+
+<!-- Sidebar (Employee) -->
+<div class="sidebar" *ngIf="userRole === 'employee'">
+  <div class="d-flex align-items-center justify-content-center mb-4">
+      <h3><i class="fa fa-user me-2"></i></h3>
+  </div>
+  <ul class="nav flex-column ms-3">
+      <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': selectedSection === 'profile'}" (click)="changeSection('profile')">
+              <i class="fa fa-id-card me-2"></i> Profile
+          </a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': selectedSection === 'punch'}" (click)="changeSection('punch')">
+              <i class="fa fa-clock me-2"></i> Punch Timings
+          </a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': selectedSection === 'leave'}" (click)="changeSection('leave')">
+              <i class="fa fa-calendar-check me-2"></i> Leave Requests
+          </a>
+      </li>
+  </ul>
+</div>
+
+
+
+  <div class="container mt-4">
+    <p>Debug: User Role is <strong>{{ userRole }}</strong></p>
+
+<app-admin *ngIf="userRole === 'admin'" [selectedSection]="selectedSection"></app-admin>
+<app-user *ngIf="userRole === 'employee'" [selectedSection]="selectedSection"></app-user>
+
+</div>
+   
+
+  <!-- <div class="sidebar" *ngIf="userRole === 'admin'">
+    <div class="d-flex align-items-center justify-content-center mb-4">
+        <h3><i class="fa fa-users me-2"></i> HRMS</h3>
+    </div>
+    <ul class="nav flex-column ms-3">
+        <li class="nav-item">
+            <a class="nav-link active" href="#Dashboard"><i class="fa fa-tachometer-alt me-2"></i> Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#Employees" ><i class="fa fa-users me-2"></i> Employees</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#Leave" ><i class="fa fa-calendar-check me-2"></i> Leave Management</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#Settings" ><i class="fa fa-cogs me-2"></i> Settings</a>
+        </li>
+    </ul>
+  </div> -->
+  
+  
+  

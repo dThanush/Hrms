@@ -1,0 +1,97 @@
+<!-- User Dashboard Section -->
+<div *ngIf="selectedSection === 'dashboard'" class="content-wrapper">
+</div>
+
+<!-- Profile Section -->
+<div *ngIf="selectedSection === 'profile'" class="content-wrapper">
+  <h4>My Profile</h4>
+  <div class="card p-4">
+      <p><strong>Username:</strong> {{ user.username }}</p>
+      <p><strong>First Name:</strong> {{ user.first_name }}</p>
+      <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Mobile Number:</strong> {{ user.mobile_number }}</p>
+      <p><strong>Employee Code:</strong> {{ user.emp_code }}</p>
+      <p><strong>Department:</strong> {{ user.emp_department }}</p>
+      <p><strong>Address:</strong> {{ user.address }}</p>
+  </div>
+</div>
+
+<!-- Punch In/Out Section -->
+<div *ngIf="selectedSection === 'punch'" class="content-wrapper">
+  <h4>Punch In/Out</h4>
+  <button class="btn btn-primary" (click)="punchIn()" [disabled]="hasPunchedIn">Punch In</button>
+  <button class="btn btn-danger" (click)="punchOut()" [disabled]="!hasPunchedIn || hasPunchedOut">Punch Out</button>
+  
+  <h4 class="mt-4">My Punch Records</h4>
+  <table class="table">
+      <thead>
+          <tr>
+              <th>Punch In</th>
+              <th>Punch Out</th>
+              <th>Date</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let punch of myPunchRecords">
+              <td>{{ punch.punch_in_time }}</td>
+              <td>{{ punch.punch_out_time || 'Not Punched Out' }}</td>
+              <td>{{ punch.date }}</td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+
+<!-- Leave Management Section -->
+<div *ngIf="selectedSection === 'leave'" class="content-wrapper">
+  <h4>My Leave Requests</h4>
+  <button class="btn btn-success" (click)="openLeaveForm()">Request Leave</button>
+  
+  <!-- Leave Request Form -->
+  <div *ngIf="showLeaveForm" class="card p-4 mt-3">
+      <form [formGroup]="leaveForm" (ngSubmit)="requestLeave()">
+          <div class="mb-3">
+              <label class="form-label">Leave Type</label>
+              <select class="form-control" formControlName="leave_type">
+                  <option value="sick">Sick Leave</option>
+                  <option value="casual">Casual Leave</option>
+                  <option value="vacation">Vacation Leave</option>
+              </select>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Start Date</label>
+              <input type="date" class="form-control" formControlName="start_date" required>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">End Date</label>
+              <input type="date" class="form-control" formControlName="end_date" required>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Reason</label>
+              <textarea class="form-control" formControlName="reason" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Request</button>
+          <button type="button" class="btn btn-secondary" (click)="closeLeaveForm()">Cancel</button>
+      </form>
+  </div>
+  
+  <h4 class="mt-4">Leave Records</h4>
+  <table class="table">
+      <thead>
+          <tr>
+              <th>Type</th>
+              <th>Start</th>
+              <th>End</th>
+              <th>Status</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let leave of myLeaveRecords">
+              <td>{{ leave.leave_type }}</td>
+              <td>{{ leave.start_date }}</td>
+              <td>{{ leave.end_date }}</td>
+              <td>{{ leave.status }}</td>
+          </tr>
+      </tbody>
+  </table>
+</div>

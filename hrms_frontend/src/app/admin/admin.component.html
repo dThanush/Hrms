@@ -1,0 +1,284 @@
+<!-- Dashboard Section -->
+<div *ngIf="selectedSection === 'dashboard'" class="content-wrapper">
+    <h2>Admin Dashboard</h2>
+</div>
+
+<!-- User Management Section -->
+<div *ngIf="selectedSection === 'users'" class="content-wrapper">
+    <h4>Manage Users</h4>
+    <button class="btn btn-success" (click)="openUserForm()">Add User</button>
+    <input type="text" class="form-control mt-2" [(ngModel)]="userSearch" placeholder="Search Users">
+
+    <!-- User Form -->
+    <div *ngIf="showUserForm" class="card p-4 mt-3">
+        <form [formGroup]="userForm" (ngSubmit)="editMode ? updateUser() : createUser()">
+            <!-- User fields -->
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" formControlName="username" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" formControlName="first_name" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" formControlName="last_name">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" formControlName="email" required>
+            </div>
+            
+            <!-- Employee fields -->
+            <div class="mb-3">
+                <label class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" formControlName="mobile_number" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Employee Code</label>
+                <input type="text" class="form-control" formControlName="emp_code" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Department</label>
+                <input type="text" class="form-control" formControlName="emp_department" required>
+            </div>
+           
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <input type="text" class="form-control" formControlName="address" required>
+            </div>
+            
+            <!-- Password field (only for new users) -->
+            <div class="mb-3" *ngIf="!editMode">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" formControlName="password" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Role</label>
+                <select class="form-control" formControlName="user_type">
+                    <option value="1">Admin</option>
+                    <option value="2">Employee</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">{{ editMode ? 'Update User' : 'Create User' }}</button>
+            <button type="button" class="btn btn-secondary" (click)="closeUserForm()">Cancel</button>
+        </form>
+    </div>
+
+    <!-- User List -->
+    <h4 class="mt-4">Users</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of filteredUsers()">
+                <td>{{ user.id }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.user_type == 1 ? 'Admin' : 'Employee' }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" (click)="openUserForm(user)">Edit</button>
+                    <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Leave Management Section -->
+<div *ngIf="selectedSection === 'leave'" class="content-wrapper">
+    <h4>Leave Records</h4>
+    <input type="text" class="form-control mb-2" [(ngModel)]="leaveSearch" placeholder="Search Leave Records">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let leave of filteredLeaves()">
+                <td>{{ leave.employee.first_name }}</td>
+                <td>{{ leave.leave_type }}</td>
+                <td>{{ leave.start_date }}</td>
+                <td>{{ leave.end_date }}</td>
+                <td>{{ leave.status }}</td>
+                <td>
+                    <button class="btn btn-success btn-sm" (click)="approveLeave(leave.id)">Approve</button>
+                    <button class="btn btn-danger btn-sm" (click)="rejectLeave(leave.id)">Reject</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Punch Timings Section -->
+<div *ngIf="selectedSection === 'punch'" class="content-wrapper">
+    <h4>Punch Time Records</h4>
+    <input type="text" class="form-control mb-2" [(ngModel)]="punchSearch" placeholder="Search Punch Records">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Punch In</th>
+                <th>Punch Out</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let punch of filteredPunchTimes()">
+                <td>{{ punch.employee.first_name }}</td>
+                <td>{{ punch.punch_in_time }}</td>
+                <td>{{ punch.punch_out_time || 'Not Punched Out' }}</td>
+                <td>{{ punch.date }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+<!-- <div class="container mt-4">
+    <h2>Admin Dashboard</h2>
+    <div class="mt-4">
+        <h4>Manage Users</h4>
+        <button class="btn btn-primary" (click)="openUserForm()">Add User</button>
+        <input type="text" class="form-control mt-2" [(ngModel)]="userSearch" placeholder="Search Users">
+    </div>
+    <div *ngIf="showUserForm" class="card p-4 mt-3">
+        <h5>{{ editMode ? 'Edit User' : 'Create New User' }}</h5>
+        <form (ngSubmit)="editMode ? updateUser() : createUser()">
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" [(ngModel)]="userForm.controls['fullName'].value" name="fullName" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" [(ngModel)]="userForm.controls['email'].value"  name="email" required>
+            </div>
+            <div class="mb-3" *ngIf="!editMode">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" [(ngModel)]="userForm.controls['password'].value" name="password" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" [(ngModel)]="userForm.controls['mobileNumber'].value"  name="mobileNumber" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Employee Code</label>
+                <input type="text" class="form-control" [(ngModel)]="userForm.controls['empcode'].value"  name="empcode" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Department</label>
+                <input type="text" class="form-control" [(ngModel)]="userForm.controls['department'].value" name="department" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Designation</label>
+                <input type="text" class="form-control" [(ngModel)]="userForm.controls['designation'].value" name="designation" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <input type="text" class="form-control" [(ngModel)]="userForm.controls['address'].value" name="address" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Joining Date</label>
+                <input type="date" class="form-control" [(ngModel)]="userForm.controls['joiningDate'].value" name="joiningDate" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Role</label>
+                <select class="form-control" [(ngModel)]="userForm.controls['user_type']" name="user_type">
+                    <option value="1">Admin</option>
+                    <option value="2">Employee</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">{{ editMode ? 'Update User' : 'Create User' }}</button>
+        </form>
+    </div>
+    <h4 class="mt-4">Users</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of filteredUsers()">
+                <td>{{ user.id }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.user_type == 1 ? 'Admin' : 'Employee' }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" (click)="openUserForm(user)">Edit</button>
+
+                    <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>Leave Records</h4>
+    <input type="text" class="form-control mb-2" [(ngModel)]="leaveSearch" placeholder="Search Leave Records">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let leave of filteredLeaves()">
+                <td>{{ leave.employee.admin.first_name }}</td>
+                <td>{{ leave.leave_type }}</td>
+                <td>{{ leave.start_date }}</td>
+                <td>{{ leave.end_date }}</td>
+                <td>{{ leave.status }}</td>
+                <td>
+                    <button class="btn btn-success btn-sm" (click)="approveLeave(leave.id)">Approve</button>
+                    <button class="btn btn-danger btn-sm" (click)="rejectLeave(leave.id)">Reject</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>Punch Time Records</h4>
+    <input type="text" class="form-control mb-2" [(ngModel)]="punchSearch" placeholder="Search Punch Records">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Punch In</th>
+                <th>Punch Out</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let punch of filteredPunchTimes()">
+                <td>{{ punch.employee.admin.first_name }}</td>
+                <td>{{ punch.punch_in_time }}</td>
+                <td>{{ punch.punch_out_time || 'Not Punched Out' }}</td>
+                <td>{{ punch.date }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div> -->
